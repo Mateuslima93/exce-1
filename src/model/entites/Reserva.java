@@ -15,7 +15,10 @@ public class Reserva {
         
     }
 
-    public Reserva(Integer numQuarto, Date checkIn, Date checkOut) {
+    public Reserva(Integer numQuarto, Date checkIn, Date checkOut) throws DominioExcecao {
+       if (!checkOut.after(checkIn)) {
+                throw new DominioExcecao("Data de check-out anterior a data de check-in");
+       }
         this.numQuarto = numQuarto;
         this.checkIn = checkIn;
         this.checkOut = checkOut;
@@ -39,17 +42,16 @@ public class Reserva {
         long dif = checkOut.getTime()-checkIn.getTime();
         return TimeUnit.DAYS.convert(dif, TimeUnit.MILLISECONDS);
     }
-    public String atualizacaoReserva(Date checkIn, Date checkOut){
+    public void atualizacaoReserva (Date checkIn, Date checkOut) throws DominioExcecao{
         Date agora = new Date();
             if (!checkIn.after(agora)|| !checkOut.after(agora)) {
-                return "Erro de reserva: as datas de reserva devem ser datas futuras";
+                throw new DominioExcecao("As datas de reserva devem ser datas futuras");
             }
             if (!checkOut.after(checkIn)) {
-                return "Erro na reserva: data de check-out anterior a data de check-in";
+                throw new DominioExcecao("Data de check-out anterior a data de check-in");
             } else {
                 this.checkIn = checkIn;
                 this.checkOut = checkOut;
-                return null;
         }
     }
     @Override
